@@ -1,0 +1,26 @@
+<html>
+<body>
+<form method="post" action="lecture_capture_add.php">
+  <p>Video Title: <input type="text" name="title"></input><br />
+  Account email: <input type="text" name="account"></input><br />
+  Days of class:<br />
+  <input type="checkbox" name="days[]" value="MO"><label for="monday">Monday</label>
+  <input type="checkbox" name="days[]" value="TU"><label for="tuesday">Tuesday</label><br />
+  <input type="checkbox" name="days[]" value="WE"><label for="monday">Wednesday</label>
+  <input type="checkbox" name="days[]" value="TH"><label for="tuesday">Thursday</label><br />
+  <input type="checkbox" name="days[]" value="FR"><label for="monday">Friday</label><br /><br />
+  Start Time: <input type="time" id="start" name="start"><br />
+  End Time: <input type="time" id="end" name="end"><br />
+  First Meeting: <input type="date" name="firstClass"><br />
+  Last Meeting: <input type="date" name="lastClass"><br />
+  Location: <select name="location">
+  <option value="129.93.10.68">LLS 102</option>
+  <option value="129.93.32.1">JH 110</option>
+  <option value="129.93.39.20">ARCH 127</option>
+  <option value="	129.93.59.4">RH 15</option>
+</select><br />
+<input type="submit">
+</form>
+
+</body>
+</html>
