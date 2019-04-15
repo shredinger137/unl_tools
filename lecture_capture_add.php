@@ -47,7 +47,7 @@ print "$name : $value<br>";
 
 // Pull in data from form
 
-$title = $_POST['title'];
+$title = 'REC ' . $_POST['title'];
 $email = $_POST['account'];
 $location = $_POST['location'];
 $start = $_POST['start'];
@@ -73,7 +73,7 @@ $strippedEndDate = preg_replace("/[^a-zA-Z\d\s]/", "", $lastclass);
 
 
 /******
- Conflict check - see if overlapping event exists
+ Conflict check - see if overlapping event exists. False means no conflict.
  Currently only checks the first instance of submitted class. This relies on instructors selecting the actual
  first day of class, and will not check other day patterns. Probably good enough for how little it should be needed.
  If instructors enter a first day that has a conflict, even if day pattern is different, this will flag.
@@ -117,12 +117,17 @@ function checkDay(){
 
 /****
 Create event object
+This uses the current syntax in description. C4 means Channel 4, and will either be set
+manually if that's wrong or set as a switch based on room selection. To be decided. R1 is
+another command string for the NCast. RP, email sets VidGrid account. RT, title sets
+video title.
 ****/
 
+C21; R1; RP,TRISHA.VICKREY@UNL.EDU;RT, CHEM 110
 $event = new Google_Service_Calendar_Event(array(
   'summary' => $title,
   'location' => $location,
-  'description' => 'C4; R1 ;RP, ' . $email .'; RT, ' . $title,
+  'description' => 'C4; R1; RP,' . $email .'; RT, ' . $title,
   'start' => array(
     'dateTime' => $starttimedate,
     'timeZone' => 'America/Chicago',
