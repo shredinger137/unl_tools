@@ -123,7 +123,6 @@ another command string for the NCast. RP, email sets VidGrid account. RT, title 
 video title.
 ****/
 
-C21; R1; RP,TRISHA.VICKREY@UNL.EDU;RT, CHEM 110
 $event = new Google_Service_Calendar_Event(array(
   'summary' => $title,
   'location' => $location,
