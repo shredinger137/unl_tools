@@ -1,0 +1,16 @@
+@import '../../scss/pre.tmp.scss';
+
+
+.unl-event-teaser-list {
+  grid-column: 2/3;
+  grid-template-columns: repeat(auto-fill, minmax(#{ms(18)}em, 1fr) ) ;
+}
+
+
+@include mq(lg, min, width) {
+
+  .unl-event-teaser-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+}
