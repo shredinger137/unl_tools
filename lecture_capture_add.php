@@ -145,10 +145,10 @@ $event = new Google_Service_Calendar_Event(array(
  //Push to Google (or not)
 if(!checkConflict($results, $events) && checkDay()){
   $event = $service->events->insert($calendarId, $event);
-  printf('<br />Event created: %s\n', $event->htmlLink);
+  echo '<p>Lecture capture scheduled successfully. Please contact <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> to make changes or for additional help.</p>';
 
 } else {
-  echo "Unable to create event, conflict detected or date mismatch.";
+  echo '<p>Unable to schedule capture. Please double check your entries or email <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> for help.</p>';
 
 }
 

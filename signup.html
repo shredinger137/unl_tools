@@ -17,14 +17,14 @@
               <span class="required">*</span>
               Video title:
             </label>
-            <input type="text" id="title" name="title" />
+            <input type="text" id="title" name="title" pattern="^[\w\-\( \) \? \s]+$" required/>
           </li>
           <li>
             <label for="account">
               <span class="required">*</span>
               Account email:
             </label>
-            <input type="text" id="account" name="account" />
+            <input type="email" id="account" name="account" required />
           </li>
           <fieldset>
           <legend>
@@ -40,7 +40,7 @@
               <label for="TU">Tuesday</label>
             </li>
             <li>
-              <input type="checkbox"  name="das[]" value="WE" id="WE" />
+              <input type="checkbox"  name="days[]" value="WE" id="WE" />
               <label for="WE">Wednesday</label>
             </li>
             <li>
@@ -57,28 +57,28 @@
               <span class="required">*</span>
               Start Time:
             </label>
-            <input type="time" id="start" name="start" />
+            <input type="time" id="start" name="start" required/>
           </li>
           <li>
             <label for="end">
               <span class="required">*</span>
               End Time:
             </label>
-            <input type="time" id="end" name="end" />
+            <input type="time" id="end" name="end" required/>
           </li>
           <li>
             <label for="firstClass">
               <span class="required">*</span>
               Start Date:
             </label>
-            <input type="date" id="firstClass" name="firstClass" />
+            <input type="date" id="firstClass" name="firstClass" required />
           </li>
           <li>
             <label for="lastClass">
               <span class="required">*</span>
               End Date:
             </label>
-            <input type="date" id="lastClass" name="lastClass" />
+            <input type="date" id="lastClass" name="lastClass" required />
           </li>
           <li>
             <label for="location">Location:</label>
