@@ -1,26 +1,100 @@
 <html>
-<body>
-<form method="post" action="lecture_capture_add.php">
-  <p>Video Title: <input type="text" name="title"></input><br />
-  Account email: <input type="text" name="account"></input><br />
-  Days of class:<br />
-  <input type="checkbox" name="days[]" value="MO"><label for="monday">Monday</label>
-  <input type="checkbox" name="days[]" value="TU"><label for="tuesday">Tuesday</label><br />
-  <input type="checkbox" name="days[]" value="WE"><label for="monday">Wednesday</label>
-  <input type="checkbox" name="days[]" value="TH"><label for="tuesday">Thursday</label><br />
-  <input type="checkbox" name="days[]" value="FR"><label for="monday">Friday</label><br /><br />
-  Start Time: <input type="time" id="start" name="start"><br />
-  End Time: <input type="time" id="end" name="end"><br />
-  First Meeting: <input type="date" name="firstClass"><br />
-  Last Meeting: <input type="date" name="lastClass"><br />
-  Location: <select name="location">
-  <option value="129.93.10.68">LLS 102</option>
-  <option value="129.93.32.1">JH 110</option>
-  <option value="129.93.39.20">ARCH 127</option>
-  <option value="	129.93.59.4">RH 15</option>
-</select><br />
-<input type="submit">
-</form>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>Automatic Lecture Capture Sign Up</title>
+    <link rel="stylesheet" type="text/css" href="./wdn/templates_5.0/css/critical.css">
+    <link rel="stylesheet" type="text/css" href="./wdn/templates_5.0/css/deprecated.css">
+    <link rel="stylesheet" type="text/css" href="./wdn/templates_5.0/css/core.css">
+  </head>
 
-</body>
+  <body data-version="5.0">
+    <h3>Automatic Lecture Capture</h3>
+    <form method="post" action="lecture_capture_add.php">
+      <fieldset>
+        <ol>
+          <li>
+            <label for="title">
+              <span class="required">*</span>
+              Video title:
+            </label>
+            <input type="text" id="title" name="title" />
+          </li>
+          <li>
+            <label for="account">
+              <span class="required">*</span>
+              Account email:
+            </label>
+            <input type="text" id="account" name="account" />
+          </li>
+          <fieldset>
+          <legend>
+              <span class="required">*</span>
+              Days of Classes:
+          </legend>
+            <li>
+              <input type="checkbox" value="1" name="days[]" value="MO" id="MO" />
+              <label for="MO">Monday</label>
+            </li>
+            <li>
+              <input type="checkbox" value="1" name="days[]" value="TU" id="TU" />
+              <label for="TU">Tuesday</label>
+            </li>
+            <li>
+              <input type="checkbox" value="1" name="days[]" value="WE" id="WE" />
+              <label for="WE">Wednesday</label>
+            </li>
+            <li>
+              <input type="checkbox" value="1" name="days[]" value="TH" id="TH" />
+              <label for="TH">Thursday</label>
+            </li>
+            <li>
+              <input type="checkbox" value="1" name="days[]" value="FR" id="FR" />
+              <label for="FR">Friday</label>
+            </li>
+          </fieldset>
+          <li>
+            <label for="start">
+              <span class="required">*</span>
+              Start Time:
+            </label>
+            <input type="time" id="start" name="start" />
+          </li>
+          <li>
+            <label for="end">
+              <span class="required">*</span>
+              End Time:
+            </label>
+            <input type="time" id="end" name="end" />
+          </li>
+          <li>
+            <label for="firstClass">
+              <span class="required">*</span>
+              Start Date:
+            </label>
+            <input type="date" id="firstClass" name="firstClass" />
+          </li>
+          <li>
+            <label for="lastClass">
+              <span class="required">*</span>
+              End Date:
+            </label>
+            <input type="date" id="lastClass" name="lastClass" />
+          </li>
+          <li>
+            <label for="location">Location:</label>
+            <select name="location" id="location">
+              <option value="" selected="selected"> </option>
+              <option value="129.93.10.68">LLS 102</option>
+              <option value="129.93.32.1">JH 110</option>
+              <option value="129.93.39.20">ARCH 127</option>
+              <option value="	129.93.59.4">RH 15</option>
+              <option value="129.93.122.138">TEAC 105</option>
+              <option value="129.93.84.2">HENZ 124</option>
+            </select>
+          </li>
+        </ol>
+      </fieldset>
+      <input type="submit" class="dcf-btn-secondary">
+    </form>
+  </body>
 </html>
