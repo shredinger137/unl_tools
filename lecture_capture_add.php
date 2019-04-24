@@ -8,6 +8,9 @@ Nebraska-Lincoln. Created by Casey Lewiston, ITS Learning Spaces, based on
 Google's templates. Check those templates if you need to update for future API
 versions.
 
+Contact: caseylewiston@gmail.
+https://github.com/shredinger137/
+
 Required dependency comes from the Google PHP client, which is available at
 https://github.com/googleapis/google-api-php-client/
 
@@ -24,7 +27,8 @@ require_once __DIR__.'/vendor/autoload.php';
 
 /*********
  Configuration settings for using Google Calendar API. You'll need an access
- token from a Google Service Account.
+ token from a Google Service Account. The calendar to be added to must be
+ shared with that account username, with full permissions.
 
 Test Dev Calendar ID: as0e2hrtu22bkureqpk2ehpeas@group.calendar.google.com
 Production Calendar ID: unl.academic.video@gmail.com
