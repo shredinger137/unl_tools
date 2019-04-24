@@ -25,6 +25,10 @@ require_once __DIR__.'/vendor/autoload.php';
 /*********
  Configuration settings for using Google Calendar API. You'll need an access
  token from a Google Service Account.
+
+Test Dev Calendar ID: as0e2hrtu22bkureqpk2ehpeas@group.calendar.google.com
+Production Calendar ID: unl.academic.video@gmail.com
+
 *********/
 
 $client = new Google_Client();
@@ -35,7 +39,7 @@ $client->setAuthConfig($credentials_file);
 $client->setApplicationName(APP_NAME);
 $client->addScope(Google_Service_Calendar::CALENDAR);
 $client->addScope(Google_Service_Calendar::CALENDAR_READONLY);
-$calendarId = 'fc4tlf3ujvu6kcg78i48mebaho@group.calendar.google.com';
+$calendarId = 'as0e2hrtu22bkureqpk2ehpeas@group.calendar.google.com';
 
 $service = new Google_Service_Calendar($client);
 

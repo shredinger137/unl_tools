@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "academic-video",
+  "private_key_id": "b114710c4ea2554cfb49ddcfa900b3b54a73e99e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCY2jV09UZFEE7n\nQn64/k+mAQCOlfZkmiTcDPBbktJRbimRvsII24IlIcVHYODLqXGK+i0P7yxRYfaC\nT5krwH93SsiIRxNDvpYbmdJZWuYLA+nUyfdQMQACZRMMtVgH+7Am1qYlvdnzfb6E\nDmdszWDvWq56akyJvC8rWw99GZZ8Hj57PM+T2iJiutSQhUTJwgpVzyCe3yBM4iDG\n8S7HpStZ46a/xaX71x19OM+Ybf6S670STMcsr0olDbQA8BJhX/J6bz6QuCj7fR3P\nZq23fpSTi0LoSLoMFY0yTMw/eh+W1HN/XeI8gPWq6QjhHADVRSu/QOanhtlrsIn+\nlfWZ6xBvAgMBAAECggEAAouo6D9yBm2QPkLZzf0uPT/JTyjgMHOTArcmu9+uFY9e\n9m1Da7JXlRa5vuxIZGUKlMA4Ii86pbctFO58JEHRlHndyIKmgukqxs0utwv0fWFU\ncnEKnn6yaVfMbyG/JrUrevoacRsJcr7vowWoGiRWChQi0XKDvznB71gM4fvlZIl1\nz6LBou13cgWZvucR5mgfXF6/c7tRd+nij+PaFXBVk2+fRZRNgxspw35m+VXm16YZ\nAvuVn54I+YnW7RABsxjAT9zmLx5VM2uecmeORfz30CbO3azn2yYj8M+MhWvxWd+A\ntyWGG+LaisM/fZtrBO+0AuQ3TRKUCyxZwJyyMJC5gQKBgQDOIOO+qLkjqxXweVp0\nYAKMUneqqd4IQUGa5LAnwiNnRbrZYg4XiyXr8xJnyeZPn3h3W0fn00WjTOYHrlDF\nN2jNdsLfrrtawBRR64MJJ/0xSiBVEwcPNRx9Vx15/5iCwftdtakQdFCgvXSQdnWM\nE/t8sdFbFC7wgys9DmiOG8Oj6QKBgQC91YYR/3GpU0b9Te3GjO0M6LX+n6WJe21H\nRuGrk9E1qEBK8JTJjXwMDs1dro8lvcBRytmSd+r8uXjJh/L1lWt9EB9Ko89LRjUo\nkUIcKBO60JOjEGr97SfrHAqvtbhZyrq5Fj/Imu2vSaabEG9bNLhwhXl8QwUVqoF2\n7qozU6cSlwKBgADuVRj/Wha3Jxo28hmkdV584N18duxCnzE75y/GyLImtnlU4Atr\nLXirWGHvn4Ksjba8Ss7ZPW9HYaKXPvYlEewbpTWtbFs0kuLr1WOtMo+Obib0Nwvy\niXZndlKevOmaRrBdqa3RWKvhLy2X22AOlwwxIWjv5mZfsUpNTluV9IRBAoGBAKTn\nMRm9Tp0KbGZqJZ0OmnVWSZIwWHo/L8R0/GAxfdEgoQj4SCd1skY/LYKtukfMt53V\nmn6zkPuMmjJm2FUhQUhYkvYhqlb3XAIrfMQ8xDbKLRW/k1GVi9GegGH2d3f4tY9G\nlo3Kl6JnVkTpV/Jgr79/EvMwvN//R4tq84q2pjFtAoGAD/Vb4tlAOiVWoU9bM4DC\n+sVS2jfcZuuNNH20Yz9IzwqqZDWCqMkmkEnQ75U9Dg/6ZW/ED6twODwA3AF9g2HA\nse2Bvb8DBsyHELJBYb2p8WkWTq6bYmx77l1qL4i9S/iRlvzemAOnYNxNo5R/qRXV\nopJsGHTlFdVzB9s4gR0OQEA=\n-----END PRIVATE KEY-----\n",
+  "client_email": "lecturecapture@academic-video.iam.gserviceaccount.com",
+  "client_id": "105147353881183547675",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/lecturecapture%40academic-video.iam.gserviceaccount.com"
+}
