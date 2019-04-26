@@ -22,7 +22,6 @@ block below. Credentials can be generated using the Google Developers Console.
 
 *********/
 
-include_once('config.php');
 require_once __DIR__.'/vendor/autoload.php';
    session_start();
 
@@ -37,7 +36,6 @@ Production Calendar ID: unl.academic.video@gmail.com
 *********/
 
 $client = new Google_Client();
-$calendarId = 'as0e2hrtu22bkureqpk2ehpeas@group.calendar.google.com';
 $application_creds = __DIR__.'/creds.json';  //the Service Account generated key in JSON
 $credentials_file = file_exists($application_creds) ? $application_creds : false;
 define("APP_NAME","Automatic Lecture Capture");
@@ -45,7 +43,7 @@ $client->setAuthConfig($credentials_file);
 $client->setApplicationName(APP_NAME);
 $client->addScope(Google_Service_Calendar::CALENDAR);
 $client->addScope(Google_Service_Calendar::CALENDAR_READONLY);
-
+$calendarId = 'as0e2hrtu22bkureqpk2ehpeas@group.calendar.google.com';
 
 $service = new Google_Service_Calendar($client);
 
@@ -65,25 +63,6 @@ $end = $_POST['end'];
 $firstclass = $_POST['firstClass'];
 $lastclass = $_POST['lastClass'];
 $err = "";
-
-
-// Create day pattern in $days for recurring events
-$days = '';
-foreach($_POST['days'] as $addDay){
-  if($days != ''){
-    $days = $days . "," . $addDay;
-  } else {
-    $days = $addDay;
-  }
-}
-
-// create syntactic strings for start time and 'until' element
-$starttimedate = $firstclass . "T" . $start . ":00-0600";
-$endtimedate = $firstclass . "T" . $end . ":00-0600";
-$strippedEndDate = preg_replace("/[^a-zA-Z\d\s]/", "", $lastclass);
-
-
-
 
 //Validation checks, combined. 'False' is bad.
 //[<>%\$] preg_match("/[^A-Za-z]/", $FirstName)
@@ -116,6 +95,20 @@ function formValidate(){
 }
 
 
+// Create day pattern in $days for recurring events
+$days = '';
+foreach($_POST['days'] as $addDay){
+  if($days != ''){
+    $days = $days . "," . $addDay;
+  } else {
+    $days = $addDay;
+  }
+}
+
+// create syntactic strings for start time and 'until' element
+$starttimedate = $firstclass . "T" . $start . ":00-0600";
+$endtimedate = $firstclass . "T" . $end . ":00-0600";
+$strippedEndDate = preg_replace("/[^a-zA-Z\d\s]/", "", $lastclass);
 
 
 /******
@@ -133,6 +126,7 @@ $optParams = array(
 $results = $service->events->listEvents($calendarId, $optParams);
 $events = $results->getItems();
 
+
 function checkConflict($results, $events){
   global $location, $starttimedate, $err;
   if (empty($events)) {
@@ -148,16 +142,17 @@ function checkConflict($results, $events){
 }
 
 /***
-Day validation - check if first date selected matches day pattern. Returns true if so, false if there's a problem.
+Day validation - check if first date selected matches day pattern. Returns true
+if so, false if there's a problem.
 ***/
 
 function checkDay(){
   global $starttimedate, $days, $err;
   $day_start = strtoupper(substr(date('D', (strtotime($starttimedate))), 0, 2));
   if (strpos($days, $day_start) !== false){
-    $err = "ERR_DAY_MISMATCH";
     return true;
   }
+  $err = "ERR_DAY_MISMATCH";
   return false;
 }
 
@@ -193,7 +188,7 @@ $event = new Google_Service_Calendar_Event(array(
 if(!checkConflict($results, $events) && checkDay() && formValidate()){
   $event = $service->events->insert($calendarId, $event);
   echo '<p>Lecture capture scheduled successfully. Please contact <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> to make changes or for additional help.</p>';
-
+  mySupport();
 } else {
   echo '<p>Unable to schedule capture. Please double check your entries or email <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> for help. Process exited with error code: ' . $err . '.</p>';
 
