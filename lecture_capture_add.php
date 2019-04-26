@@ -62,6 +62,38 @@ $start = $_POST['start'];
 $end = $_POST['end'];
 $firstclass = $_POST['firstClass'];
 $lastclass = $_POST['lastClass'];
+$err = "";
+
+//Validation checks, combined. 'False' is bad.
+//[<>%\$] preg_match("/[^A-Za-z]/", $FirstName)
+
+function formValidate(){
+  global $title, $email, $location, $start, $end, $firstclass, $lastclass, $err;
+
+  //Is there data? All fields are required.
+  foreach($_POST as $name => $value) {
+  if(!$value || preg_match("/[<>%\$]/", $title)) {
+    $err = "ERR_NO_VALUE";
+    return false;
+  }
+
+  //Are there unsafe characters in strings?
+  if(is_string($value)){
+    if(preg_match("/[<>%\$]/", $value)){
+    $err = "ERR_INVALID_ENTRY";
+    return false;
+  }
+  }
+}
+
+  //Does email look like email?
+  if(!preg_match("/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/", $email)) {
+    $err = "ERR_INVALID_EMAIL";
+    return false;
+  }
+ return true;
+}
+
 
 // Create day pattern in $days for recurring events
 $days = '';
@@ -77,7 +109,6 @@ foreach($_POST['days'] as $addDay){
 $starttimedate = $firstclass . "T" . $start . ":00-0600";
 $endtimedate = $firstclass . "T" . $end . ":00-0600";
 $strippedEndDate = preg_replace("/[^a-zA-Z\d\s]/", "", $lastclass);
-
 
 
 /******
@@ -97,12 +128,13 @@ $events = $results->getItems();
 
 
 function checkConflict($results, $events){
-  global $location, $starttimedate;
+  global $location, $starttimedate, $err;
   if (empty($events)) {
     return false;
   }
   foreach ($events as $listedEvents) {
    if($location == $listedEvents['location'] && strtotime($starttimedate) >= strtotime($listedEvents['start']['dateTime']) && strtotime($starttimedate) <= strtotime($listedEvents['end']['dateTime'])){
+     $err = "ERR_CONFLICTING_EVENT";
      return true;
    }
   }
@@ -114,9 +146,10 @@ Day validation - check if first date selected matches day pattern. Returns true 
 ***/
 
 function checkDay(){
-  global $starttimedate, $days;
+  global $starttimedate, $days, $err;
   $day_start = strtoupper(substr(date('D', (strtotime($starttimedate))), 0, 2));
   if (strpos($days, $day_start) !== false){
+    $err = "ERR_DAY_MISMATCH";
     return true;
   }
   return false;
@@ -151,12 +184,12 @@ $event = new Google_Service_Calendar_Event(array(
 
 
  //Push to Google (or not)
-if(!checkConflict($results, $events) && checkDay()){
+if(!checkConflict($results, $events) && checkDay() && formValidate()){
   $event = $service->events->insert($calendarId, $event);
   echo '<p>Lecture capture scheduled successfully. Please contact <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> to make changes or for additional help.</p>';
 
 } else {
-  echo '<p>Unable to schedule capture. Please double check your entries or email <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> for help.</p>';
+  echo '<p>Unable to schedule capture. Please double check your entries or email <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> for help. Process exited with error code: ' . $err . '.</p>';
 
 }
 
