@@ -22,6 +22,7 @@ block below. Credentials can be generated using the Google Developers Console.
 
 *********/
 
+include_once('config.php');
 require_once __DIR__.'/vendor/autoload.php';
    session_start();
 
@@ -36,6 +37,7 @@ Production Calendar ID: unl.academic.video@gmail.com
 *********/
 
 $client = new Google_Client();
+$calendarId = 'as0e2hrtu22bkureqpk2ehpeas@group.calendar.google.com';
 $application_creds = __DIR__.'/creds.json';  //the Service Account generated key in JSON
 $credentials_file = file_exists($application_creds) ? $application_creds : false;
 define("APP_NAME","Automatic Lecture Capture");
@@ -43,7 +45,7 @@ $client->setAuthConfig($credentials_file);
 $client->setApplicationName(APP_NAME);
 $client->addScope(Google_Service_Calendar::CALENDAR);
 $client->addScope(Google_Service_Calendar::CALENDAR_READONLY);
-$calendarId = 'as0e2hrtu22bkureqpk2ehpeas@group.calendar.google.com';
+
 
 $service = new Google_Service_Calendar($client);
 
@@ -63,6 +65,25 @@ $end = $_POST['end'];
 $firstclass = $_POST['firstClass'];
 $lastclass = $_POST['lastClass'];
 $err = "";
+
+
+// Create day pattern in $days for recurring events
+$days = '';
+foreach($_POST['days'] as $addDay){
+  if($days != ''){
+    $days = $days . "," . $addDay;
+  } else {
+    $days = $addDay;
+  }
+}
+
+// create syntactic strings for start time and 'until' element
+$starttimedate = $firstclass . "T" . $start . ":00-0600";
+$endtimedate = $firstclass . "T" . $end . ":00-0600";
+$strippedEndDate = preg_replace("/[^a-zA-Z\d\s]/", "", $lastclass);
+
+
+
 
 //Validation checks, combined. 'False' is bad.
 //[<>%\$] preg_match("/[^A-Za-z]/", $FirstName)
@@ -95,20 +116,6 @@ function formValidate(){
 }
 
 
-// Create day pattern in $days for recurring events
-$days = '';
-foreach($_POST['days'] as $addDay){
-  if($days != ''){
-    $days = $days . "," . $addDay;
-  } else {
-    $days = $addDay;
-  }
-}
-
-// create syntactic strings for start time and 'until' element
-$starttimedate = $firstclass . "T" . $start . ":00-0600";
-$endtimedate = $firstclass . "T" . $end . ":00-0600";
-$strippedEndDate = preg_replace("/[^a-zA-Z\d\s]/", "", $lastclass);
 
 
 /******
@@ -125,7 +132,6 @@ $optParams = array(
 );
 $results = $service->events->listEvents($calendarId, $optParams);
 $events = $results->getItems();
-
 
 function checkConflict($results, $events){
   global $location, $starttimedate, $err;
