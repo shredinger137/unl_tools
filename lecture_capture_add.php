@@ -19,7 +19,7 @@ The account must have Calendar scope, and the calendar you plan to edit has
 to be shared with it. The calendar ID must be correctly placed in the values
 block below. Credentials can be generated using the Google Developers Console.
 
-
+Currently, a test version is running at rrderby.org/unl/signup.html
 *********/
 
 require_once __DIR__.'/vendor/autoload.php';
@@ -94,6 +94,7 @@ function formValidate(){
  return true;
 }
 
+/**** End Validation Check ***/
 
 // Create day pattern in $days for recurring events
 $days = '';
@@ -112,7 +113,7 @@ $strippedEndDate = preg_replace("/[^a-zA-Z\d\s]/", "", $lastclass);
 
 
 /******
- Conflict check - see if overlapping event exists. False means no conflict.
+ Conflict check - see if overlapping event exists. True means no conflict.
  Currently only checks the first instance of submitted class. This relies on instructors selecting the actual
  first day of class, and will not check other day patterns. Probably good enough for how little it should be needed.
  If instructors enter a first day that has a conflict, even if day pattern is different, this will flag.
@@ -130,16 +131,32 @@ $events = $results->getItems();
 function checkConflict($results, $events){
   global $location, $starttimedate, $err;
   if (empty($events)) {
-    return false;
+    return true;
   }
   foreach ($events as $listedEvents) {
    if($location == $listedEvents['location'] && strtotime($starttimedate) >= strtotime($listedEvents['start']['dateTime']) && strtotime($starttimedate) <= strtotime($listedEvents['end']['dateTime'])){
      $err = "ERR_CONFLICTING_EVENT";
-     return true;
+     return false;
    }
   }
-  return false;
+  return true;
 }
+
+
+
+//Checks if start time is before end time; if not, return false and error
+
+function timeCheck(){
+  global $starttimedate, $endtimedate, $err;
+  if(strtotime($starttimedate) > strtotime($endtimedate) ){
+    $err = "ERR_END_BEFORE_START";
+    return false;
+  }
+  return true;
+}
+
+//End time check
+
 
 /***
 Day validation - check if first date selected matches day pattern. Returns true
@@ -160,7 +177,7 @@ function checkDay(){
 /****
 Create event object
 This uses the current syntax in description. C4 means Channel 4, and will either be set
-manually if that's wrong or set as a switch based on room selection. To be decided. R1 is
+manually if that's wrong or set as a switch based on room selection. R1 is
 another command string for the NCast. RP, email sets VidGrid account. RT, title sets
 video title.
 ****/
@@ -185,13 +202,11 @@ $event = new Google_Service_Calendar_Event(array(
 
 
  //Push to Google (or not)
-if(!checkConflict($results, $events) && checkDay() && formValidate()){
+if(checkConflict($results, $events) && checkDay() && formValidate() && timeCheck()){
   $event = $service->events->insert($calendarId, $event);
   echo '<p>Lecture capture scheduled successfully. Please contact <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> to make changes or for additional help.</p>';
-  mySupport();
 } else {
   echo '<p>Unable to schedule capture. Please double check your entries or email <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> for help. Process exited with error code: ' . $err . '.</p>';
-
 }
 
 
