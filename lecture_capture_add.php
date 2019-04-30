@@ -8,8 +8,8 @@ Nebraska-Lincoln. Created by Casey Lewiston, ITS Learning Spaces, based on
 Google's templates. Check those templates if you need to update for future API
 versions.
 
-Contact: caseylewiston@gmail.
-https://github.com/shredinger137/
+Contact: caseylewiston@gmail.com
+https://github.com/shredinger137/unl_tools
 
 Required dependency comes from the Google PHP client, which is available at
 https://github.com/googleapis/google-api-php-client/
@@ -20,6 +20,17 @@ to be shared with it. The calendar ID must be correctly placed in the values
 block below. Credentials can be generated using the Google Developers Console.
 
 Currently, a test version is running at rrderby.org/unl/signup.html
+
+Validation checks include: forms have data, data looks about right,
+start time is before end time, no conflicting events in the same room
+exist, selected day pattern matches selected start date.
+
+Conflict check does not look forward at recurring events, so this is a TODO
+for future upgrades and a place that potential error can happen. A simple method
+for this would be to find the next few days and check those. It also will only
+check the first date anyway, so won't catch it if the start date for the conflict
+is later. The hope is that people put in the actual time of their class, in
+which case it's not a problem.
 *********/
 
 require_once __DIR__.'/vendor/autoload.php';
@@ -47,12 +58,6 @@ $calendarId = 'as0e2hrtu22bkureqpk2ehpeas@group.calendar.google.com';
 
 $service = new Google_Service_Calendar($client);
 
-/* showing POST data for debug
-foreach($_POST as $name => $value) {
-print "$name : $value<br>";
-}
-*/
-
 // Pull in data from form
 
 $title = 'REC ' . $_POST['title'];
@@ -64,34 +69,36 @@ $firstclass = $_POST['firstClass'];
 $lastclass = $_POST['lastClass'];
 $err = "";
 
-//Validation checks, combined. 'False' is bad.
-//[<>%\$] preg_match("/[^A-Za-z]/", $FirstName)
+/*****
+Validation checks, combined. 'False' is bad.
+*****/
+
 
 function formValidate(){
   global $title, $email, $location, $start, $end, $firstclass, $lastclass, $err;
 
   //Is there data? All fields are required.
   foreach($_POST as $name => $value) {
-  if(!$value || preg_match("/[<>%\$]/", $title)) {
-    $err = "ERR_NO_VALUE";
-    return false;
-  }
+    if(!$value || preg_match("/[<>%\$]/", $title)) {
+      $err = "ERR_NO_VALUE";
+      return false;
+    }
 
-  //Are there unsafe characters in strings?
-  if(is_string($value)){
-    if(preg_match("/[<>%\$]/", $value)){
-    $err = "ERR_INVALID_ENTRY";
-    return false;
+    //Are there unsafe characters in strings?
+    if(is_string($value)){
+      if(preg_match("/[<>%\$]/", $value)){
+        $err = "ERR_INVALID_ENTRY";
+        return false;
+      }
+    }
   }
-  }
-}
 
   //Does email look like email?
   if(!preg_match("/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/", $email)) {
     $err = "ERR_INVALID_EMAIL";
     return false;
   }
- return true;
+  return true;
 }
 
 /**** End Validation Check ***/
@@ -202,6 +209,7 @@ $event = new Google_Service_Calendar_Event(array(
 
 
  //Push to Google (or not)
+
 if(checkConflict($results, $events) && checkDay() && formValidate() && timeCheck()){
   $event = $service->events->insert($calendarId, $event);
   echo '<p>Lecture capture scheduled successfully. Please contact <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> to make changes or for additional help.</p>';
