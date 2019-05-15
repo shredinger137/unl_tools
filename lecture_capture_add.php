@@ -36,6 +36,9 @@ which case it's not a problem.
 require_once __DIR__.'/vendor/autoload.php';
    session_start();
 
+ include 'config.php';
+ require_once "Mail.php";
+
 /*********
  Configuration settings for using Google Calendar API. You'll need an access
  token from a Google Service Account. The calendar to be added to must be
@@ -46,6 +49,8 @@ Production Calendar ID: unl.academic.video@gmail.com
 
 *********/
 
+$timezone = 'America/Chicago';
+$utc_offset =  date('Z') / 3600;
 $client = new Google_Client();
 $application_creds = __DIR__.'/creds.json';  //the Service Account generated key in JSON
 $credentials_file = file_exists($application_creds) ? $application_creds : false;
@@ -54,7 +59,7 @@ $client->setAuthConfig($credentials_file);
 $client->setApplicationName(APP_NAME);
 $client->addScope(Google_Service_Calendar::CALENDAR);
 $client->addScope(Google_Service_Calendar::CALENDAR_READONLY);
-$calendarId = 'as0e2hrtu22bkureqpk2ehpeas@group.calendar.google.com';
+$calendarId = 'unl.academic.video@gmail.com';
 
 $service = new Google_Service_Calendar($client);
 
@@ -68,6 +73,17 @@ $end = $_POST['end'];
 $firstclass = $_POST['firstClass'];
 $lastclass = $_POST['lastClass'];
 $err = "";
+$combined_data = "";
+function getUTCOffset($timezone)
+{
+    $current   = timezone_open($timezone);
+    $utcTime  = new \DateTime('now', new \DateTimeZone('UTC'));
+    $offsetInSecs =  timezone_offset_get( $current, $utcTime);
+    $hoursAndSec = gmdate('H:i', abs($offsetInSecs));
+    return stripos($offsetInSecs, '-') === false ? "+{$hoursAndSec}" : "-{$hoursAndSec}";
+}
+
+$utcMod = getUTCOffset($timezone);
 
 /*****
 Validation checks, combined. 'False' is bad.
@@ -75,7 +91,7 @@ Validation checks, combined. 'False' is bad.
 
 
 function formValidate(){
-  global $title, $email, $location, $start, $end, $firstclass, $lastclass, $err;
+  global $title, $email, $location, $start, $end, $firstclass, $lastclass, $err, $combined_data;
 
   //Is there data? All fields are required.
   foreach($_POST as $name => $value) {
@@ -90,6 +106,10 @@ function formValidate(){
         $err = "ERR_INVALID_ENTRY";
         return false;
       }
+    }
+    if(!is_array($value)){
+      $strValue = strval($value);
+      $combined_data = $combined_data . " " . $name . ": " . $strValue . ";";
     }
   }
 
@@ -114,8 +134,8 @@ foreach($_POST['days'] as $addDay){
 }
 
 // create syntactic strings for start time and 'until' element
-$starttimedate = $firstclass . "T" . $start . ":00-0600";
-$endtimedate = $firstclass . "T" . $end . ":00-0600";
+$starttimedate = $firstclass . "T" . $start . ":00" . $utcMod;
+$endtimedate = $firstclass . "T" . $end . ":00" . $utcMod;
 $strippedEndDate = preg_replace("/[^a-zA-Z\d\s]/", "", $lastclass);
 
 
@@ -134,7 +154,6 @@ $optParams = array(
 $results = $service->events->listEvents($calendarId, $optParams);
 $events = $results->getItems();
 
-
 function checkConflict($results, $events){
   global $location, $starttimedate, $err;
   if (empty($events)) {
@@ -148,7 +167,6 @@ function checkConflict($results, $events){
   }
   return true;
 }
-
 
 
 //Checks if start time is before end time; if not, return false and error
@@ -171,8 +189,8 @@ if so, false if there's a problem.
 ***/
 
 function checkDay(){
-  global $starttimedate, $days, $err;
-  $day_start = strtoupper(substr(date('D', (strtotime($starttimedate))), 0, 2));
+  global $firstclass, $days, $err;
+  $day_start = strtoupper(substr(date('D', (strtotime($firstclass))), 0, 2));
   if (strpos($days, $day_start) !== false){
     return true;
   }
@@ -180,6 +198,28 @@ function checkDay(){
   return false;
 }
 
+
+function sendMail(){
+  global $to, $from, $subject, $host, $port, $emailpassword, $emailusername, $combined_data;
+  $body = "A user requested automated lecture capture with the following values:
+
+  " . $combined_data;
+  $headers = array ('From' => $from,
+ 'To' => $to,
+ 'Subject' => $subject);
+ $smtp = Mail::factory('smtp',
+ array ('host' => $host,
+ 'port' => $port,
+ 'auth' => true,
+ 'username' => $emailusername,
+ 'password' => $emailpassword));
+
+  $mail = $smtp->send($to, $headers, $body);
+
+ if (PEAR::isError($mail)) {
+           echo("<p>" . $mail->getMessage() . "</p>");
+ }
+}
 
 /****
 Create event object
@@ -213,6 +253,7 @@ $event = new Google_Service_Calendar_Event(array(
 if(checkConflict($results, $events) && checkDay() && formValidate() && timeCheck()){
   $event = $service->events->insert($calendarId, $event);
   echo '<p>Lecture capture scheduled successfully. Please contact <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> to make changes or for additional help.</p>';
+  sendMail();
 } else {
   echo '<p>Unable to schedule capture. Please double check your entries or email <a href="mailto:collaborate@unl.edu">collaborate@unl.edu</a> for help. Process exited with error code: ' . $err . '.</p>';
 }
